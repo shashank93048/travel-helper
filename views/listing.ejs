@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title><%= listing.title %> — Travel Helper</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<header class="topbar"><a class="brand" href="/">Travel<span>Helper</span></a><nav><a href="/">Stays</a><a href="/#trending">Trending</a></nav><div class="top-actions"><a class="host-btn" href="/">Back home</a><button class="avatar">☰</button></div></header>
+<main class="detail"><a class="back" href="/">← Back to stays</a><div class="detail-image"><img src="<%= listing.images[0] %>" alt="<%= listing.title %>"></div>
+<div class="detail-layout"><div><p class="eyebrow"><%= listing.type %> · <%= listing.location %></p><h1><%= listing.title %></h1><p class="rating">★ <%= listing.rating %> · <%= listing.reviews %> reviews</p><hr><h2>A beautiful place to stay</h2><p class="description">Enjoy a comfortable stay, great views and a memorable local experience. This listing is ready to connect to a database, authentication and real booking payments.</p><div class="amenity-list"><% listing.amenities.forEach(a => { %><span>✓ <%= a %></span><% }) %></div></div>
+<aside class="booking"><h2>₹<%= listing.price.toLocaleString("en-IN") %> <small>/ night</small></h2><div class="booking-row"><span>Check in</span><input type="date"></div><div class="booking-row"><span>Check out</span><input type="date"></div><div class="booking-row"><span>Guests</span><input type="number" min="1" value="2"></div><button class="primary full">Reserve</button><p class="fine">You won't be charged yet.</p></aside></div></main>
+</body></html>

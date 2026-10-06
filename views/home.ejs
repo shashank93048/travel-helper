@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Helper — Find your next stay</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="topbar" id="topbar">
+  <a class="brand" href="/">Travel<span>Helper</span></a>
+  <nav><a href="#stays">Stays</a><a href="#trending">Trending</a><a href="#stories">Stories</a></nav>
+  <div class="top-actions">
+    <button class="ghost-btn" id="themeToggle" title="Toggle dark mode">◐</button>
+    <button class="host-btn">Become a host</button>
+    <button class="avatar">☰</button>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-slides">
+    <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85')"></div>
+    <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1470214304380-aadaedcfff1b?auto=format&fit=crop&w=2000&q=85')"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-copy">
+    <p class="eyebrow">TRAVEL YOUR WAY</p>
+    <h1>Find a place that feels like <em>home.</em></h1>
+    <p class="subtitle">Stays, experiences and ideas for your next unforgettable trip.</p>
+  </div>
+
+  <form class="searchbar glass" id="searchForm" action="/search" method="GET">
+    <div class="search-field where-field">
+      <span>Where</span>
+      <input id="destination" autocomplete="off" name="destination" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search destinations">
+      <div class="suggestions" id="suggestions">
+        <div class="suggestion-title">Popular searches</div>
+        <button type="button" data-value="Goa">📍 Goa</button>
+        <button type="button" data-value="Manali">🏔️ Manali</button>
+        <button type="button" data-value="Udaipur">🌅 Udaipur</button>
+        <button type="button" data-value="Delhi">🌆 Delhi</button>
+        <button type="button" data-value="Rishikesh">🌲 Rishikesh</button>
+      </div>
+    </div>
+    <button type="button" class="search-field" id="dateOpen"><span>Dates</span><b id="dateLabel">Add dates</b></button>
+    <label class="search-field"><span>Guests</span><input type="number" name="guests" min="1" value="2"></label>
+    <button type="button" class="surprise" id="surpriseBtn">✨ Surprise me</button>
+    <button class="search-btn" type="submit">⌕</button>
+  </form>
+
+  <div class="hero-tools">
+    <button id="flexibleBtn">I'm flexible</button>
+    <div class="slide-dots"><i class="active"></i><i></i><i></i></div>
+  </div>
+</section>
+
+<section class="categories" id="stays">
+  <button class="category active" data-filter="All">✨ <span>All</span></button>
+  <button class="category" data-filter="Beach">🏖️ <span>Beach</span></button>
+  <button class="category" data-filter="Mountains">🏔️ <span>Mountains</span></button>
+  <button class="category" data-filter="Countryside">🏡 <span>Countryside</span></button>
+  <button class="category" data-filter="City">🌆 <span>City</span></button>
+  <button class="category" data-filter="Nature">🌲 <span>Nature</span></button>
+  <button class="category" data-filter="Trending">🔥 <span>Trending</span></button>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <div><p class="eyebrow">CURATED FOR YOU</p><h2>Popular stays</h2></div>
+    <div class="view-tools">
+      <label class="price-toggle"><input type="checkbox" id="priceToggle"><span></span> Total price</label>
+      <div class="view-toggle"><button class="active" id="gridBtn">▦ Grid</button><button id="mapBtn">⌖ Map</button></div>
+    </div>
+  </div>
+
+  <div class="grid" id="listingGrid">
+    <% listings.forEach(listing => { %>
+      <article class="card" data-type="<%= listing.type %>" data-price="<%= listing.price %>">
+        <div class="image-wrap">
+          <div class="card-images">
+            <% listing.images.forEach((img, index) => { %><img class="<%= index === 0 ? 'active' : '' %>" src="<%= img %>" alt="<%= listing.title %>"><% }) %>
+          </div>
+          <button class="carousel prev" data-dir="-1">‹</button><button class="carousel next" data-dir="1">›</button>
+          <button class="heart" aria-label="Save listing">♡</button>
+          <span class="badge"><%= listing.type %></span>
+          <div class="image-dots"><i class="active"></i><i></i><i></i></div>
+          <div class="amenities"><% listing.amenities.forEach(a => { %><span><%= a %></span><% }) %></div>
+        </div>
+        <a class="card-body" href="/listing/<%= listing.id %>">
+          <div class="card-title"><h3><%= listing.title %></h3><span>★ <%= listing.rating %></span></div>
+          <p><%= listing.location %></p>
+          <p class="muted"><%= listing.reviews %> reviews</p>
+          <strong class="price" data-nightly="₹<%= listing.price.toLocaleString('en-IN') %>" data-total="₹<%= (listing.price * 3 + 1200).toLocaleString('en-IN') %>">₹<%= listing.price.toLocaleString('en-IN') %> <small>/ night</small></strong>
+        </a>
+      </article>
+    <% }) %>
+  </div>
+
+  <div class="map-view" id="mapView">
+    <div class="fake-map">
+      <div class="map-water"></div>
+      <div class="map-land land-a"></div><div class="map-land land-b"></div>
+      <div class="map-label l1">DELHI</div><div class="map-label l2">RAJASTHAN</div><div class="map-label l3">GOA</div><div class="map-label l4">HIMALAYAS</div>
+      <% listings.forEach(listing => { %>
+        <button class="map-pin" style="top:<%= listing.lat %>%;left:<%= listing.left %>%;" data-title="<%= listing.title %>" data-price="₹<%= listing.price.toLocaleString('en-IN') %>">₹<%= Math.round(listing.price/100)*100 %></button>
+      <% }) %>
+      <div class="map-card" id="mapCard">Hover a price pin to preview a stay.</div>
+    </div>
+  </div>
+</section>
+
+<section class="trend-section" id="trending">
+  <div class="section-heading"><div><p class="eyebrow">GO WHERE THE BUZZ IS</p><h2>Trending destinations</h2></div></div>
+  <div class="horizontal-scroll">
+    <div class="destination-card" style="background-image:url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=900&q=80')"><b>Beach getaways</b><span>Goa · 18 stays</span></div>
+    <div class="destination-card" style="background-image:url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=900&q=80')"><b>Cozy cabins</b><span>Manali · 24 stays</span></div>
+    <div class="destination-card" style="background-image:url('https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=900&q=80')"><b>Royal escapes</b><span>Udaipur · 15 stays</span></div>
+    <div class="destination-card" style="background-image:url('https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=900&q=80')"><b>City weekends</b><span>Delhi · 31 stays</span></div>
+  </div>
+</section>
+
+<section class="quiz" id="quiz">
+  <div class="quiz-copy">
+    <p class="eyebrow">NOT SURE WHERE TO GO?</p><h2>Find your vibe.</h2>
+    <p>Answer three quick questions and we'll match you with a travel style.</p>
+    <button class="primary" id="startQuiz">Start the 30-second quiz →</button>
+  </div>
+  <div class="quiz-visual">✈️<span>→</span>🏡<span>→</span>🌅</div>
+</section>
+
+<section class="stories" id="stories">
+  <div class="section-heading"><div><p class="eyebrow">FROM OUR TRAVELERS</p><h2>Stories worth sharing</h2></div></div>
+  <div class="story-grid">
+    <article class="story"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"><div><b>“The view was unreal.”</b><p>“Travel Helper made our mountain weekend effortless.”</p><span>— Ananya · Manali</span></div></article>
+    <article class="story"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80"><div><b>“Exactly the escape we needed.”</b><p>“The villa looked even better than the photos.”</p><span>— Rohan · Goa</span></div></article>
+    <article class="story"><img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=900&q=80"><div><b>“Beautiful, simple, memorable.”</b><p>“We found a place that felt like our own.”</p><span>— Meera · Delhi</span></div></article>
+  </div>
+</section>
+</main>
+
+<div class="modal" id="dateModal">
+  <div class="modal-box calendar-box"><button class="close">×</button><p class="eyebrow">PLAN YOUR STAY</p><h2>Choose your dates</h2>
+    <div class="calendar-head"><button id="prevMonth">‹</button><b id="monthTitle"></b><button id="nextMonth">›</button></div>
+    <div class="calendar-grid" id="calendar"></div><button class="primary full" id="applyDates">Apply dates</button>
+  </div>
+</div>
+
+<div class="modal" id="quizModal">
+  <div class="modal-box quiz-box"><button class="close">×</button><p class="eyebrow">FIND YOUR VIBE</p><div id="quizContent"></div></div>
+</div>
+
+<footer>
+  <div><a class="brand" href="/">Travel<span>Helper</span></a><p>Travel made simpler, one stay at a time.</p></div>
+  <div><h4>Explore</h4><a href="#stays">Stays</a><a href="#trending">Trending</a></div>
+  <div><h4>Support</h4><a href="#">Help center</a><a href="#">Safety</a></div>
+  <div><h4>Company</h4><a href="#">About us</a><a href="#">Contact</a></div>
+</footer>
+<script src="/js/app.js"></script>
+</body>
+</html>
